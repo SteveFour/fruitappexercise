@@ -52,13 +52,13 @@ public abstract class AppDatabase extends RoomDatabase {
         long cat2 = db.categoryDao().insert(new Category("Berries", "Organic sweet berries"));
         long cat3 = db.categoryDao().insert(new Category("Citrus", "Tangy and juicy citrus"));
 
-        // Products
-        db.productDao().insert(new Product((int)cat1, "Apple", 2.5, "Crispy Red Apple", ""));
-        db.productDao().insert(new Product((int)cat1, "Banana", 1.2, "Ripe Yellow Banana", ""));
-        db.productDao().insert(new Product((int)cat2, "Strawberry", 4.0, "Sweet Fresh Strawberry", ""));
-        db.productDao().insert(new Product((int)cat2, "Blueberry", 5.5, "Wild organic Blueberry", ""));
-        db.productDao().insert(new Product((int)cat3, "Orange", 3.0, "Juicy Navel Orange", ""));
-        db.productDao().insert(new Product((int)cat3, "Lemon", 1.5, "Fresh Yellow Lemon", ""));
+        // Products - Prices in VND
+        db.productDao().insert(new Product((int)cat1, "Apple", 50000, "Crispy Red Apple (per kg)", ""));
+        db.productDao().insert(new Product((int)cat1, "Banana", 20000, "Ripe Yellow Banana (per bunch)", ""));
+        db.productDao().insert(new Product((int)cat2, "Strawberry", 150000, "Sweet Fresh Strawberry (500g)", ""));
+        db.productDao().insert(new Product((int)cat2, "Blueberry", 200000, "Wild organic Blueberry (250g)", ""));
+        db.productDao().insert(new Product((int)cat3, "Orange", 45000, "Juicy Navel Orange (per kg)", ""));
+        db.productDao().insert(new Product((int)cat3, "Lemon", 30000, "Fresh Yellow Lemon (per kg)", ""));
 
         // User
         db.userDao().insert(new User("admin", "admin123", "Default Admin"));
