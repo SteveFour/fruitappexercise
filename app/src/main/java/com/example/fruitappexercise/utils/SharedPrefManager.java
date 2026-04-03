@@ -35,10 +35,6 @@ public class SharedPrefManager {
         return sharedPreferences.getInt(Constants.PREF_USER_ID, -1);
     }
 
-    public String getUsername() {
-        return sharedPreferences.getString(Constants.PREF_USER_NAME, "User");
-    }
-
     public void logout() {
         sharedPreferences.edit().clear().apply();
     }

@@ -11,7 +11,7 @@ public class User {
     private String password;
     private String fullName;
     private String email;
-    private String role;
+    private String role; // "admin" or "user"
 
     public User(String username, String password, String fullName, String email, String role) {
         this.username = username;

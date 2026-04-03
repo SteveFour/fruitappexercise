@@ -8,18 +8,21 @@ import java.util.List;
 
 @Dao
 public interface AppDao {
+    // User
     @Insert
     long insertUser(User user);
 
     @Query("SELECT * FROM users WHERE username = :username AND password = :password LIMIT 1")
     User login(String username, String password);
 
+    // Category
     @Insert
     void insertCategory(Category category);
 
     @Query("SELECT * FROM categories")
     List<Category> getAllCategories();
 
+    // Product
     @Insert
     void insertProduct(Product product);
 
@@ -29,9 +32,11 @@ public interface AppDao {
     @Query("SELECT * FROM products WHERE categoryId = :categoryId")
     List<Product> getProductsByCategory(int categoryId);
 
+    // Order
     @Insert
     long insertOrder(Order order);
 
+    // OrderDetail
     @Insert
     void insertOrderDetail(OrderDetail orderDetail);
 }
