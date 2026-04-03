@@ -15,7 +15,7 @@ import com.example.fruitappexercise.database.AppDatabase;
 import com.example.fruitappexercise.model.Category;
 import com.example.fruitappexercise.model.Product;
 import com.example.fruitappexercise.utils.SharedPrefManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.O
     private TextView tvWelcome;
     private Button btnAuth;
     private RecyclerView rvCategories, rvProducts;
-    private FloatingActionButton fabOrder;
+    private ExtendedFloatingActionButton fabOrder;
     
     private CategoryAdapter categoryAdapter;
     private ProductAdapter productAdapter;
