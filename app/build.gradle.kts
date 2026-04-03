@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.com.google.devtools.ksp)
 }
 
 android {
@@ -9,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.fruitappexercise"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
