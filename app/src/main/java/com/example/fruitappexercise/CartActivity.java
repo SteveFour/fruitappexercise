@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.fruitappexercise.database.AppDatabase;
 import com.example.fruitappexercise.model.Order;
 import com.example.fruitappexercise.model.OrderDetail;
-import com.example.fruitappexercise.utils.PreferenceManager;
+import com.example.fruitappexercise.utils.SharedPrefManager;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class CartActivity extends AppCompatActivity {
     private CartAdapter adapter;
     private List<OrderDetail> cartItems = new ArrayList<>();
     private Order pendingOrder;
-    private PreferenceManager preferenceManager;
+    private SharedPrefManager prefManager;
     private DecimalFormat currencyFormat = new DecimalFormat("#,### đ");
 
     @Override
@@ -35,7 +35,7 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        preferenceManager = new PreferenceManager(this);
+        prefManager = SharedPrefManager.getInstance(this);
         
         initViews();
         loadCartData();
@@ -54,7 +54,7 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void loadCartData() {
-        int userId = preferenceManager.getUserId();
+        int userId = prefManager.getCurrentUserId();
         AppDatabase db = AppDatabase.getInstance(this);
         
         pendingOrder = db.orderDao().getPendingOrderByUserId(userId);
@@ -69,7 +69,7 @@ public class CartActivity extends AppCompatActivity {
         } else {
             tvTotalAmount.setText("0 đ");
             btnCheckout.setEnabled(false);
-            Toast.makeText(this, "Your cart is empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Giỏ hàng của bạn đang trống", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -82,7 +82,7 @@ public class CartActivity extends AppCompatActivity {
         pendingOrder.setStatus("Paid");
         db.orderDao().updateOrder(pendingOrder);
 
-        Toast.makeText(this, "Payment successful!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
         
         // Redirect to Invoice Screen
         Intent intent = new Intent(this, InvoiceActivity.class);

@@ -11,7 +11,7 @@ import com.example.fruitappexercise.model.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Category.class, Product.class, Order.class, OrderDetail.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class, Category.class, Product.class, Order.class, OrderDetail.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase instance;
     private static final int NUMBER_OF_THREADS = 4;
@@ -40,37 +40,39 @@ public abstract class AppDatabase extends RoomDatabase {
         return instance;
     }
 
-    // Alias for getDatabase as some parts of the app use getInstance
     public static AppDatabase getInstance(final Context context) {
         return getDatabase(context);
     }
 
     private static final RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
+        public void onOpen(@NonNull SupportSQLiteDatabase db) {
+            super.onOpen(db);
             databaseWriteExecutor.execute(() -> {
-                seedData(instance);
+                AppDatabase database = instance;
+                if (database != null && database.categoryDao().getAllCategories().isEmpty()) {
+                    seedData(database);
+                }
             });
         }
     };
 
     private static void seedData(AppDatabase db) {
         // Categories
-        long cat1 = db.categoryDao().insert(new Category("Fruits", "Fresh seasonal fruits"));
-        long cat2 = db.categoryDao().insert(new Category("Berries", "Organic sweet berries"));
-        long cat3 = db.categoryDao().insert(new Category("Citrus", "Tangy and juicy citrus"));
+        long cat1 = db.categoryDao().insert(new Category("Trái cây", "Trái cây tươi theo mùa"));
+        long cat2 = db.categoryDao().insert(new Category("Quả mọng", "Quả mọng ngọt hữu cơ"));
+        long cat3 = db.categoryDao().insert(new Category("Cam quýt", "Cam quýt mọng nước"));
 
-        // Products - Prices in VND
-        db.productDao().insert(new Product((int)cat1, "Apple", 50000, "Crispy Red Apple (per kg)", ""));
-        db.productDao().insert(new Product((int)cat1, "Banana", 20000, "Ripe Yellow Banana (per bunch)", ""));
-        db.productDao().insert(new Product((int)cat2, "Strawberry", 150000, "Sweet Fresh Strawberry (500g)", ""));
-        db.productDao().insert(new Product((int)cat2, "Blueberry", 200000, "Wild organic Blueberry (250g)", ""));
-        db.productDao().insert(new Product((int)cat3, "Orange", 45000, "Juicy Navel Orange (per kg)", ""));
-        db.productDao().insert(new Product((int)cat3, "Lemon", 30000, "Fresh Yellow Lemon (per kg)", ""));
+        // Products - Prices in VND, using resource names for imagePath
+        db.productDao().insert(new Product((int)cat1, "Táo đỏ", 50000, "Táo đỏ giòn (mỗi kg)", "apple"));
+        db.productDao().insert(new Product((int)cat1, "Chuối", 20000, "Chuối chín vàng (mỗi nải)", "banana"));
+        db.productDao().insert(new Product((int)cat2, "Dâu tây", 150000, "Dâu tây tươi ngọt (500g)", "strawberry"));
+        db.productDao().insert(new Product((int)cat2, "Việt quất", 200000, "Việt quất rừng hữu cơ (250g)", "blueberry"));
+        db.productDao().insert(new Product((int)cat3, "Cam", 45000, "Cam sành mọng nước (mỗi kg)", "orange"));
+        db.productDao().insert(new Product((int)cat3, "Chanh", 30000, "Chanh vàng tươi (mỗi kg)", "lemon"));
 
         // User
-        db.userDao().insert(new User("admin", "admin123", "Default Admin", "admin@example.com", "ADMIN"));
-        db.userDao().insert(new User("user", "user123", "Normal User", "user@example.com", "USER"));
+        db.userDao().insert(new User("admin", "admin123", "Quản trị viên", "admin@example.com", "ADMIN"));
+        db.userDao().insert(new User("user", "user123", "Người dùng", "user@example.com", "USER"));
     }
 }

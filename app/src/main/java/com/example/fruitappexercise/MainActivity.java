@@ -13,12 +13,17 @@ import com.example.fruitappexercise.adapter.CategoryAdapter;
 import com.example.fruitappexercise.adapter.ProductAdapter;
 import com.example.fruitappexercise.database.AppDatabase;
 import com.example.fruitappexercise.model.Category;
+import com.example.fruitappexercise.model.Order;
+import com.example.fruitappexercise.model.OrderDetail;
 import com.example.fruitappexercise.model.Product;
 import com.example.fruitappexercise.utils.SharedPrefManager;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements CategoryAdapter.OnCategoryClickListener, ProductAdapter.OnProductClickListener {
 
@@ -64,8 +69,8 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.O
 
     private void loadData() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Category> categories = database.appDao().getAllCategories();
-            List<Product> products = database.appDao().getAllProducts();
+            List<Category> categories = database.categoryDao().getAllCategories();
+            List<Product> products = database.productDao().getAllProducts();
 
             runOnUiThread(() -> {
                 categoryAdapter.setCategories(categories);
@@ -86,11 +91,9 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.O
 
         fabOrder.setOnClickListener(v -> {
             if (prefManager.isLoggedIn()) {
-                Toast.makeText(this, "Đang chuyển sang màn hình Tạo Đơn hàng...", Toast.LENGTH_SHORT).show();
-                // Intent intent = new Intent(this, CheckoutActivity.class);
-                // startActivity(intent);
+                startActivity(new Intent(this, CartActivity.class));
             } else {
-                Toast.makeText(this, "Vui lòng đăng nhập để tạo đơn hàng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng đăng nhập để xem giỏ hàng", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, LoginActivity.class));
             }
         });
@@ -115,26 +118,54 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.O
     @Override
     public void onCategoryClick(Category category) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Product> filteredProducts = database.appDao().getProductsByCategory(category.getId());
+            List<Product> filteredProducts = database.productDao().getProductsByCategory(category.getId());
             runOnUiThread(() -> productAdapter.setProducts(filteredProducts));
         });
     }
 
     @Override
     public void onProductClick(Product product) {
-        Toast.makeText(this, "Xem chi tiết: " + product.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ProductDetailActivity.class);
+        intent.putExtra("PRODUCT_ID", product.getId());
+        startActivity(intent);
     }
 
     @Override
     public void onAddToCart(Product product) {
-        // Kiểm tra đăng nhập khi bấm nút THÊM
         if (prefManager.isLoggedIn()) {
-            Toast.makeText(this, "Đã thêm " + product.getName() + " vào giỏ", Toast.LENGTH_SHORT).show();
-            // Sau này Dev B sẽ code thêm logic thêm vào bảng OrderDetail ở đây
+            AppDatabase.databaseWriteExecutor.execute(() -> {
+                int userId = prefManager.getCurrentUserId();
+                
+                // Get or Create Pending Order
+                Order pendingOrder = database.orderDao().getPendingOrderByUserId(userId);
+                long orderId;
+
+                if (pendingOrder == null) {
+                    String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+                    Order newOrder = new Order(userId, currentDate, "Pending", 0.0);
+                    orderId = database.orderDao().insertOrder(newOrder);
+                } else {
+                    orderId = pendingOrder.getId();
+                }
+
+                // Add Order Detail
+                OrderDetail detail = new OrderDetail((int) orderId, product.getId(), 1, product.getPrice());
+                database.orderDao().insertOrderDetail(detail);
+
+                // Update Order Total Amount
+                if (pendingOrder == null) {
+                    pendingOrder = database.orderDao().getOrderById((int)orderId);
+                }
+                pendingOrder.setTotalAmount(pendingOrder.getTotalAmount() + product.getPrice());
+                database.orderDao().updateOrder(pendingOrder);
+
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Đã thêm " + product.getName() + " vào giỏ", Toast.LENGTH_SHORT).show();
+                });
+            });
         } else {
             Toast.makeText(this, "Vui lòng đăng nhập để mua hàng", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, LoginActivity.class));
         }
     }
 }

@@ -14,7 +14,7 @@ import com.example.fruitappexercise.database.AppDatabase;
 import com.example.fruitappexercise.model.Order;
 import com.example.fruitappexercise.model.OrderDetail;
 import com.example.fruitappexercise.model.Product;
-import com.example.fruitappexercise.utils.PreferenceManager;
+import com.example.fruitappexercise.utils.SharedPrefManager;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -29,7 +29,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private int productId;
     private Product product;
-    private PreferenceManager preferenceManager;
+    private SharedPrefManager prefManager;
     private DecimalFormat currencyFormat = new DecimalFormat("#,### đ");
 
     @Override
@@ -37,7 +37,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
-        preferenceManager = new PreferenceManager(this);
+        prefManager = SharedPrefManager.getInstance(this);
 
         // Get Product ID from Intent
         productId = getIntent().getIntExtra("PRODUCT_ID", -1);
@@ -69,12 +69,20 @@ public class ProductDetailActivity extends AppCompatActivity {
             tvProductName.setText(product.getName());
             tvProductPrice.setText(currencyFormat.format(product.getPrice()));
             tvProductDescription.setText(product.getDescription());
+            
+            // Dynamic image loading from resources
+            if (product.getImagePath() != null && !product.getImagePath().isEmpty()) {
+                int resId = getResources().getIdentifier(product.getImagePath(), "drawable", getPackageName());
+                if (resId != 0) {
+                    ivProductImage.setImageResource(resId);
+                }
+            }
         }
     }
 
     private void handleAddToCart() {
-        if (!preferenceManager.isLoggedIn()) {
-            Toast.makeText(this, "Please login to buy products", Toast.LENGTH_SHORT).show();
+        if (!prefManager.isLoggedIn()) {
+            Toast.makeText(this, "Vui lòng đăng nhập để mua hàng", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, LoginActivity.class));
             return;
         }
@@ -85,11 +93,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         } catch (Exception e) {}
 
         if (quantity <= 0) {
-            Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Số lượng không hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int userId = preferenceManager.getUserId();
+        int userId = prefManager.getCurrentUserId();
         AppDatabase db = AppDatabase.getInstance(this);
 
         // 1. Get or Create Pending Order
@@ -115,7 +123,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         pendingOrder.setTotalAmount(pendingOrder.getTotalAmount() + (product.getPrice() * quantity));
         db.orderDao().updateOrder(pendingOrder);
 
-        Toast.makeText(this, "Added to cart!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
         finish();
     }
 }
