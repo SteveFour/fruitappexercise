@@ -15,7 +15,7 @@ import com.example.fruitappexercise.database.AppDatabase;
 import com.example.fruitappexercise.model.Category;
 import com.example.fruitappexercise.model.Product;
 import com.example.fruitappexercise.utils.SharedPrefManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.O
     private TextView tvWelcome;
     private Button btnAuth;
     private RecyclerView rvCategories, rvProducts;
-    private FloatingActionButton fabOrder;
+    private ExtendedFloatingActionButton fabOrder;
     
     private CategoryAdapter categoryAdapter;
     private ProductAdapter productAdapter;
@@ -85,11 +85,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.O
         });
 
         fabOrder.setOnClickListener(v -> {
-            // Nhảy sang giao diện tạo order của dev B
-            // Vì dev B chưa tạo xong, tạm thời ta sẽ Toast thông báo
             Toast.makeText(this, "Đang chuyển sang màn hình Tạo Đơn hàng...", Toast.LENGTH_SHORT).show();
-            
-            // Code thực tế khi Dev B tạo xong CheckoutActivity:
             // Intent intent = new Intent(this, CheckoutActivity.class);
             // startActivity(intent);
         });
