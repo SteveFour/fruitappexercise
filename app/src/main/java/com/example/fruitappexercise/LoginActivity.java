@@ -22,6 +22,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Chuyển thẳng vào MainActivity nếu đã login
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_login);
 
         initViews();
@@ -49,8 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         tvRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RegisterActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, RegisterActivity.class));
         });
     }
 
@@ -60,13 +67,17 @@ public class LoginActivity extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 if (user != null) {
+                    // Lưu session
                     SharedPrefManager.getInstance(this).saveUserLogin(
-                            user.getId(),
-                            user.getUsername(),
+                            user.getId(), 
+                            user.getUsername(), 
                             user.getRole()
                     );
 
                     Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                    
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();

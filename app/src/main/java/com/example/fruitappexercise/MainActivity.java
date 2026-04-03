@@ -85,13 +85,14 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.O
         });
 
         fabOrder.setOnClickListener(v -> {
-            // Nhảy sang giao diện tạo order của dev B
-            // Vì dev B chưa tạo xong, tạm thời ta sẽ Toast thông báo
-            Toast.makeText(this, "Đang chuyển sang màn hình Tạo Đơn hàng...", Toast.LENGTH_SHORT).show();
-            
-            // Code thực tế khi Dev B tạo xong CheckoutActivity:
-            // Intent intent = new Intent(this, CheckoutActivity.class);
-            // startActivity(intent);
+            if (prefManager.isLoggedIn()) {
+                Toast.makeText(this, "Đang chuyển sang màn hình Tạo Đơn hàng...", Toast.LENGTH_SHORT).show();
+                // Intent intent = new Intent(this, CheckoutActivity.class);
+                // startActivity(intent);
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập để tạo đơn hàng", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, LoginActivity.class));
+            }
         });
     }
 
@@ -126,6 +127,14 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.O
 
     @Override
     public void onAddToCart(Product product) {
-        Toast.makeText(this, "Đã thêm " + product.getName() + " vào giỏ", Toast.LENGTH_SHORT).show();
+        // Kiểm tra đăng nhập khi bấm nút THÊM
+        if (prefManager.isLoggedIn()) {
+            Toast.makeText(this, "Đã thêm " + product.getName() + " vào giỏ", Toast.LENGTH_SHORT).show();
+            // Sau này Dev B sẽ code thêm logic thêm vào bảng OrderDetail ở đây
+        } else {
+            Toast.makeText(this, "Vui lòng đăng nhập để mua hàng", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
     }
 }

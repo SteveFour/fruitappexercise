@@ -21,13 +21,11 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true" />
-
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".ProductDetailActivity" />
+        <activity android:name=".CartActivity" />
+        <activity android:name=".InvoiceActivity" />
 
     </application>
 

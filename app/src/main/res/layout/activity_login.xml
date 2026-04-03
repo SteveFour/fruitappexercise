@@ -9,38 +9,38 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:text="Đăng Nhập"
+        android:textColor="@android:color/black"
         android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginBottom="32dp"/>
+        android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        android:layout_marginBottom="12dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_et_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Tên đăng nhập"
-            android:inputType="text"/>
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        android:layout_marginBottom="24dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Mật khẩu"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
@@ -48,8 +48,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:text="Đăng Nhập"
-        android:textSize="16sp"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/login_tv_register"
@@ -57,6 +57,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Chưa có tài khoản? Đăng ký ngay"
-        android:textColor="?attr/colorPrimary"/>
+        android:textColor="?attr/colorPrimary" />
 
 </LinearLayout>
