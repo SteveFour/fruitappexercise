@@ -49,19 +49,17 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         tvRegister.setOnClickListener(v -> {
-            // Chuyển sang RegisterActivity nếu có
-            Toast.makeText(this, "Chức năng đăng ký đang phát triển", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
     private void performLogin(String username, String password) {
-        // Room yêu cầu chạy trong background thread
         AppDatabase.databaseWriteExecutor.execute(() -> {
             User user = AppDatabase.getDatabase(this).appDao().login(username, password);
 
             runOnUiThread(() -> {
                 if (user != null) {
-                    // Lưu trạng thái đăng nhập
                     SharedPrefManager.getInstance(this).saveUserLogin(
                             user.getId(),
                             user.getUsername(),
@@ -69,10 +67,6 @@ public class LoginActivity extends AppCompatActivity {
                     );
 
                     Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-
-                    // Chuyển sang MainActivity và đóng LoginActivity
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
